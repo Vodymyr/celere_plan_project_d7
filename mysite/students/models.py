@@ -1,10 +1,18 @@
 from django.db import models
-from teachers.models import Teacher
+from django.core.exceptions import ValidationError
+import re
 
 class Student(models.Model):
-    first_name = models.CharField(max_length=100)
-    year = models.IntegerField()
+    first_name = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50)
+    email = models.EmailField(max_length=254)
+    phone = models.CharField(max_length=15)
 
+    def clean(self):
+        super().clean()
+
+        if not re.match(r'^\+?1?\d{9,15}$', self.phone):
+            raise ValidationError('Введіть коректний номер телефону')
     def __str__(self):
         return self.first_name
 
